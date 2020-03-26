@@ -1,0 +1,62 @@
+﻿@using Domain.Entities
+@model WebUI.Models.ProductListViewModel
+@{
+    ViewBag.Title = "List";
+}
+
+<h2>Products</h2>
+
+
+
+<div class="container">
+    <div class="row" style="width: 80%">
+        @foreach (var p in Model.Products)
+        {
+            <div class="col-xs-12 col-sm-8 col-md-6">
+                <article class="card-wrapper">
+                    @if (p.ImageData != null)
+                    {
+                        <div class="image-holder">
+                            <a href="#" class="image-holder__link"></a>
+                            <div class="image-liquid image-holder--original" style="height: 250px;background-image: url('@Url.Action("GetImage", "Product", new { p.ProductID })')">
+                            </div>
+                        </div>
+                    }
+                    <div class="product-description">
+                        <!-- title -->
+                        <h1 class="product-description__title">
+                            <a href="#">
+                                @p.Name
+                            </a>
+                        </h1>
+
+                        <!-- category and price -->
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-8 product-description__category secondary-text">
+                                @p.Category
+                            </div>
+                            <div class="col-xs-12 col-sm-4 product-description__price">
+                                @p.Price.ToString("c")
+                            </div>
+                        </div>
+
+                        <!-- divider -->
+                        <hr />
+
+                    </div>
+                    @using (Html.BeginForm("AddToCart", "Cart"))
+                    {
+                        <div class="pull-right">
+                            @Html.Hidden("ProductId", p.ProductID)
+                            @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
+                            <input type="submit" class="btn btn-success" value="Add to cart" />
+                        </div>
+                    }
+                </article>
+            </div>
+        }
+    </div>
+</div>
+
+
+<div class="btn-group pull-right">@Html.PageLinks(Model.PagingInfo, x => Url.Action("List", new { page = x, category = Model.CurrentCategory }))</div>
